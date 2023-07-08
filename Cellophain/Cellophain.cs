@@ -46,12 +46,13 @@ namespace Cellophain
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+            IsFixedTimeStep = false;
         }
 
         protected override void Initialize()
         {
             //Keep gridsize to a factor of 600, the world itself doesn't scale
-            gridSize = 100;
+            gridSize = 200;
             cellSize = 600 / gridSize;
 
             //priorityType determines how conflicts in requests are handled
@@ -63,22 +64,22 @@ namespace Cellophain
             iterator = new Iterator(gridSize, priorityType);
 
             //Add whatever element you want to be the background as the first in the list
-            activeElements = new List<Element>
+            activeElements = new List<Element>();
+
+            for (int i = 0; i < 101; i++)
             {
-                new Void(),
-                new HueGene(255, 0, 0),
-                new HueGene(0, 255, 0),
-                new HueGene(0, 0, 255)
-            };
+                activeElements.Add(new RPS(rand.Next(256), rand.Next(256), rand.Next(256), i, 101));
+            }
 
             world = new Element[gridSize, gridSize];
             for (int x = 0; x < gridSize; x++)
             {
                 for (int y = 0; y < gridSize; y++)
                 {
-                    world[x, y] = activeElements[0];
+                    world[x, y] = activeElements[rand.Next(activeElements.Count)];
                 }
             }
+            RPS.CalculateWinners(101);
 
             if(activeElements.Count > 1)
             {
@@ -112,6 +113,7 @@ namespace Cellophain
             input.Update();
             primarySelected = false;
             secondarySelected = false;
+            HandleInputs();
 
             if (Mouse.GetState().X > 340 && Mouse.GetState().X < 940 && Mouse.GetState().Y > 60 && Mouse.GetState().Y < 660)
             {
@@ -124,7 +126,18 @@ namespace Cellophain
                 highlightVisible = false;
             }
 
-            HandleInputs();
+            if (paused)
+            {
+                if (input.KeyPressed(Keys.OemPeriod))
+                {
+                    world = iterator.Iterate(world);
+                }
+            }
+            else
+            {
+                world = iterator.Iterate(world);
+            }
+
 
             base.Update(gameTime);
         }
@@ -228,7 +241,7 @@ namespace Cellophain
                 {
                     for (int y = 0; y < gridSize; y++)
                     {
-                        world[x, y] = activeElements[0];
+                        world[x, y] = activeElements[rand.Next(activeElements.Count)];
                     }
                 }
             }
@@ -246,17 +259,6 @@ namespace Cellophain
             }
 
             //Do a single iteration
-            if (paused)
-            {
-                if (input.KeyPressed(Keys.OemPeriod))
-                {
-                    world = iterator.Iterate(world);
-                }
-            }
-            else
-            {
-                world = iterator.Iterate(world);
-            }
 
             //Toggle precision brush
             if (input.KeyPressed(Keys.P))
