@@ -12,10 +12,6 @@ namespace Cellophain
         protected int g;
         protected int b;
 
-        public Element()
-        {
-        }
-
         public abstract Request Iterate(Element[,] world, int xPos, int yPos);
 
         public string GetName()

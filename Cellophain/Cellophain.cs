@@ -52,7 +52,7 @@ namespace Cellophain
         protected override void Initialize()
         {
             //Keep gridsize to a factor of 600, the world itself doesn't scale
-            gridSize = 200;
+            gridSize = 50;
             cellSize = 600 / gridSize;
 
             //priorityType determines how conflicts in requests are handled
@@ -60,26 +60,28 @@ namespace Cellophain
             //1: randomized array traversal, minor performance cost, use if all requests are same priority
             //2: full priority system, large performance cost, use if some requests are higher priority than others
 
-            priorityType = 0;
+            priorityType = 1;
             iterator = new Iterator(gridSize, priorityType);
 
             //Add whatever element you want to be the background as the first in the list
-            activeElements = new List<Element>();
-
-            for (int i = 0; i < 101; i++)
+            activeElements = new List<Element>
             {
-                activeElements.Add(new RPS(rand.Next(256), rand.Next(256), rand.Next(256), i, 101));
-            }
+                new Air(),
+                new Water(),
+                new Sand()
+            };
+
 
             world = new Element[gridSize, gridSize];
+
             for (int x = 0; x < gridSize; x++)
             {
                 for (int y = 0; y < gridSize; y++)
                 {
-                    world[x, y] = activeElements[rand.Next(activeElements.Count)];
+                    world[x, y] = activeElements[0];
                 }
             }
-            RPS.CalculateWinners(101);
+
 
             if(activeElements.Count > 1)
             {
@@ -241,7 +243,7 @@ namespace Cellophain
                 {
                     for (int y = 0; y < gridSize; y++)
                     {
-                        world[x, y] = activeElements[rand.Next(activeElements.Count)];
+                        world[x, y] = activeElements[0];
                     }
                 }
             }
