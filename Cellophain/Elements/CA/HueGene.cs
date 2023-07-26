@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,17 +13,19 @@ namespace Cellophain
 
         public HueGene(int red, int green, int blue) 
         {
-            name = "hueGene";
-            r = red;
-            g = green;
-            b = blue;
+            vars["name"] = "hueGene";
+            vars["r"] = red;
+            vars["g"] = green;
+            vars["b"] = blue;
         }
 
-        public override Request Iterate(Element[,] world, int xPos, int yPos)
+        public override Request Iterate(Element[,] world)
         {
             List<Instruction> instructions = new List<Instruction>();
             int mutationStrength = 10;
             int dir = rand.Next(4);
+            int xPos = GetLocation().X;
+            int yPos = GetLocation().Y;
             int x;
             int y;
 
@@ -49,7 +52,8 @@ namespace Cellophain
 
             if (CheckCell(world, xPos + x, yPos + y).GetName() == "void")
             {
-                instructions.Add(new Instruction(xPos + x, yPos + y, new HueGene(r + rand.Next(-1 * mutationStrength, mutationStrength + 1), g + rand.Next(-1 * mutationStrength, mutationStrength + 1), b + rand.Next(-1 * mutationStrength, mutationStrength + 1))));
+                Microsoft.Xna.Framework.Color c = this.GetColor();
+                instructions.Add(new Instruction(xPos + x, yPos + y, new HueGene(c.R + rand.Next(-1 * mutationStrength, mutationStrength + 1), c.G + rand.Next(-1 * mutationStrength, mutationStrength + 1), c.B + rand.Next(-1 * mutationStrength, mutationStrength + 1))));
             }
 
             return new Request(instructions);

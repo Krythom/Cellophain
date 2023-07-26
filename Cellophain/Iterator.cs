@@ -3,6 +3,8 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
+using System.Collections;
+using System.Linq.Expressions;
 
 namespace Cellophain
 {
@@ -51,12 +53,24 @@ namespace Cellophain
                 {
                     for (int y = 0; y < gridSize; y++)
                     {
-                        Request request = world[x, y].Iterate(world, x, y);
+                        Request request = world[x, y].Iterate(world);
                         if (request != null)
                         {
                             foreach (Instruction instruction in request.GetInstructions())
                             {
-                                newWorld[instruction.GetCoords().X, instruction.GetCoords().Y] = instruction.GetElement();
+                                if (instruction.InstructionType() == "move")
+                                {
+                                    newWorld[instruction.GetCoords().X, instruction.GetCoords().Y] = instruction.GetElement();
+                                    Hashtable vars = instruction.GetElement().GetVars();
+                                    vars["x"] = instruction.GetCoords().X;
+                                    vars["y"] = instruction.GetCoords().Y;
+                                }
+                                else
+                                {
+                                    Point loc = instruction.GetElement().GetLocation();
+                                    Hashtable vars = newWorld[loc.X, loc.Y].GetVars();
+                                    vars[instruction.GetKey()] = instruction.GetVal();
+                                }
                             }
                         }
                     }
@@ -67,12 +81,24 @@ namespace Cellophain
                 Shuffle<Point>(indices);
                 foreach (Point p in indices)
                 {
-                    Request request = world[p.X, p.Y].Iterate(newWorld, p.X, p.Y);
+                    Request request = world[p.X, p.Y].Iterate(newWorld);
                     if (request != null)
                     {
                         foreach (Instruction instruction in request.GetInstructions())
                         {
-                            newWorld[instruction.GetCoords().X, instruction.GetCoords().Y] = instruction.GetElement();
+                            if (instruction.InstructionType() == "move")
+                            {
+                                newWorld[instruction.GetCoords().X, instruction.GetCoords().Y] = instruction.GetElement();
+                                Hashtable vars = instruction.GetElement().GetVars();
+                                vars["x"] = instruction.GetCoords().X;
+                                vars["y"] = instruction.GetCoords().Y;
+                            }
+                            else
+                            {
+                                Point loc = instruction.GetElement().GetLocation();
+                                Hashtable vars = newWorld[loc.X, loc.Y].GetVars();
+                                vars[instruction.GetKey()] = instruction.GetVal();
+                            }
                         }
                     }
                 }
@@ -86,10 +112,10 @@ namespace Cellophain
                 {
                     for (int y = 0; y < gridSize; y++)
                     {
-                        Request request = world[x, y].Iterate(world, x, y);
+                        Request request = world[x, y].Iterate(world);
                         if (request != null)
                         {
-                            requests.Add(world[x, y].Iterate(world, x, y));
+                            requests.Add(world[x, y].Iterate(world));
                         }
                     }
                 }
@@ -102,6 +128,7 @@ namespace Cellophain
         }
 
         //Execute requests while dealing with conflicts
+        //TODO: Doesn't currently handle "value" requests
         private Element[,] ExecuteRequests(List<Request> requests, Element[,] newWorld)
         {
             List<Request> filteredRequests = requests;

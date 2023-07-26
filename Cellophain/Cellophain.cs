@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.IO;
 using Bitmap = System.Drawing.Bitmap;
 using SColor = System.Drawing.Color;
+using System.Collections;
 
 namespace Cellophain
 {
@@ -60,28 +61,20 @@ namespace Cellophain
             //1: randomized array traversal, minor performance cost, use if all requests are same priority
             //2: full priority system, large performance cost, use if some requests are higher priority than others
 
-            priorityType = 1;
+            priorityType = 0;
             iterator = new Iterator(gridSize, priorityType);
 
             //Add whatever element you want to be the background as the first in the list
             activeElements = new List<Element>
             {
-                new Air(),
-                new Water(),
-                new Sand()
+                new RPS(100,0,0,0,3),
+                new RPS(0,100,0,1,3),
+                new RPS(0,0,100,2,3)
             };
 
-
+            RPS.CalculateWinners(3);
             world = new Element[gridSize, gridSize];
-
-            for (int x = 0; x < gridSize; x++)
-            {
-                for (int y = 0; y < gridSize; y++)
-                {
-                    world[x, y] = activeElements[0];
-                }
-            }
-
+            CreateWorld();
 
             if(activeElements.Count > 1)
             {
@@ -93,7 +86,7 @@ namespace Cellophain
                 primaryElement = 0;
             }
 
-            paused = false;
+            paused = true;
             brushSize = 0;
 
             _graphics.PreferredBackBufferWidth = 1280;
@@ -200,7 +193,9 @@ namespace Cellophain
                 {
                     if (mouseX + x >= 0 && mouseX + x < world.GetLength(0) && mouseY + y >= 0 && mouseY + y < world.GetLength(0))
                     {
-                        world[mouseX + x, mouseY + y] = activeElements[element];
+                        Element placed = (Element) activeElements[element].DeepCopy();
+                        placed.SetLocation(new Point (mouseX + x, mouseY + y));
+                        world[mouseX + x, mouseY + y] = placed;
                     }
                 }
             }
@@ -236,16 +231,10 @@ namespace Cellophain
 
         private void HandleInputs()
         {
-            //Clear grid bind
+            //Reset grid bind
             if (input.KeyPressed(Keys.Escape))
             {
-                for (int x = 0; x < gridSize; x++)
-                {
-                    for (int y = 0; y < gridSize; y++)
-                    {
-                        world[x, y] = activeElements[0];
-                    }
-                }
+                CreateWorld();
             }
 
             //Re-initialize (useful for re-rolling random colours)
@@ -326,5 +315,17 @@ namespace Cellophain
             }
         }
 
+        public void CreateWorld()
+        {
+            for (int x = 0; x < gridSize; x++)
+            {
+                for (int y = 0; y < gridSize; y++)
+                {
+                    Element placed = (Element) activeElements[rand.Next(activeElements.Count)].DeepCopy();
+                    placed.SetLocation(new Point(x, y));
+                    world[x, y] = placed;
+                }
+            }
+        }
     }
 }

@@ -11,8 +11,21 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Elements\CA\**" />
+    <EmbeddedResource Remove="Elements\CA\**" />
+    <None Remove="Elements\CA\**" />
+  </ItemGroup>
+  <ItemGroup>
     <None Remove="Icon.ico" />
     <None Remove="Icon.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Elements\CA\GeneSheep.cs" />
+    <Compile Include="Elements\CA\GoL.cs" />
+    <Compile Include="Elements\CA\HueGene.cs" />
+    <Compile Include="Elements\CA\RainbowSheep.cs" />
+    <Compile Include="Elements\CA\RPS.cs" />
+    <Compile Include="Elements\CA\Sheep.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icon.ico" />

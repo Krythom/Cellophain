@@ -18,15 +18,17 @@ namespace Cellophain
         {
             this.id = id;
             this.n = n;
-            name = "RPS";
-            r = red;
-            g = green;
-            b = blue;
+            vars["name"] = "RPS";
+            vars["r"] = red;
+            vars["g"] = green;
+            vars["b"] = blue;
         }
 
-        public override Request Iterate(Element[,] world, int xPos, int yPos)
+        public override Request Iterate(Element[,] world)
         {
             List<Instruction> instructions = new List<Instruction>();
+            int xPos = GetLocation().X;
+            int yPos = GetLocation().Y;
             RPS winner = GetWinner(world, xPos, yPos);
 
             if (winner != null)
@@ -35,7 +37,7 @@ namespace Cellophain
             }
             else
             {
-                instructions.Add(new Instruction(xPos, yPos, new RPS(r, g, b, id, n)));
+                instructions.Add(new Instruction(xPos, yPos, this));
             }
 
             return new Request(instructions);

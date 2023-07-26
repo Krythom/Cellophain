@@ -8,29 +8,44 @@ namespace Cellophain
 {
     abstract class Powder : Element
     {
-        protected string matterType;
-        protected double density;
-        protected double temp;
-
         public string GetMatter()
         {
-            return matterType;
+            return (string) vars["matterType"];
         }
 
         public double GetDensity()
         {
-            return density;
+            return System.Convert.ToDouble(vars["density"]);
         }
 
         public double GetTemp() 
         {
-            return temp;
+            return System.Convert.ToDouble(vars["temp"]);
         }
 
-        //Avoids needing to cast as a powder for every check in individual powders code
-        public Powder CheckPowder(Element[,] world, int x, int y)
+        public double GetCapacity()
         {
-            return (Powder) CheckCell(world, x, y);
+            return System.Convert.ToDouble(vars["heatCapacity"]);
+        }
+
+        public double TempChange(Element[,] world, Powder self, int xPos, int yPos)
+        {
+            double env = 0;
+
+            for (int x = -1; x <= 1; x++)
+            {
+                for (int y = -1; y <= 1; y++)
+                {
+                    if (Math.Abs(x) != Math.Abs(y))
+                    {
+                        Powder other = (Powder) CheckCell(world, x + xPos, y + yPos);
+                        env += other.GetTemp();
+                    }
+                }
+            }
+
+            env /= 4;
+            return 0.01 * (env - self.GetTemp())/self.GetCapacity();
         }
     }
 }

@@ -8,13 +8,13 @@ namespace Cellophain
     { 
         public Void()
         {
-            name = "void";
-            r = 10;
-            g = 10;
-            b = 20;
+            vars["name"] = "void";
+            vars["r"] = 10;
+            vars["g"] = 10;
+            vars["b"] = 20;
         }
 
-        public override Request Iterate(Element[,] world, int xPos, int yPos)
+        public override Request Iterate(Element[,] world)
         {
             return null;
         }

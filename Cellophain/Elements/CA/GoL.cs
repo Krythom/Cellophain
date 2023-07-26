@@ -9,25 +9,28 @@ namespace Cellophain
         private bool alive;
         public GoL(bool alive)
         {
-            name = "GoL";
+            vars["name"] = "GoL";
             if (alive)
             {
-                r = 256;
-                g = 256;
-                b = 256;
+                vars["r"] = 256;
+                vars["g"] = 256;
+                vars["b"] = 256;
             }
             else
             {
-                r = 0;
-                g = 0;
-                b = 0;
+                vars["r"] = 0;
+                vars["g"] = 0;
+                vars["b"] = 0;
             }
 
             this.alive = alive;
         }
-        public override Request Iterate(Element[,] world, int xPos, int yPos)
+        public override Request Iterate(Element[,] world)
         {
             List<Instruction> instructions = new List<Instruction>();
+
+            int xPos = GetLocation().X;
+            int yPos = GetLocation().Y;
 
             if (alive)
             {

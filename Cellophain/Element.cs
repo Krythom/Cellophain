@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Microsoft.Xna.Framework;
 
@@ -7,21 +9,47 @@ namespace Cellophain
 {
     abstract class Element
     {
-        protected string name;
-        protected int r;
-        protected int g;
-        protected int b;
+        protected Hashtable vars = new Hashtable
+        {
+            { "name", "" },
+            { "r", 0 },
+            { "g", 0 },
+            { "b", 0 },
+            { "x", 0 },
+            { "y", 0 }
+        };
 
-        public abstract Request Iterate(Element[,] world, int xPos, int yPos);
+        public abstract Request Iterate(Element[,] world);
 
         public string GetName()
         {
-            return name;
+            return (string)vars["name"];
         }
 
         public Color GetColor()
         {
+            int r = System.Convert.ToInt32(vars["r"]);
+            int g = System.Convert.ToInt32(vars["g"]);
+            int b = System.Convert.ToInt32(vars["b"]);
             return new Color(r, g, b);
+        }
+
+        public Hashtable GetVars()
+        {
+            return vars;
+        }
+
+        public Point GetLocation()
+        {
+            int x = System.Convert.ToInt32(vars["x"]);
+            int y = System.Convert.ToInt32(vars["y"]);
+            return new Point(x, y);
+        }
+
+        public void SetLocation(Point location)
+        {
+            vars["x"] = location.X;
+            vars["y"] = location.Y;
         }
 
         public Element CheckCell(Element[,] world, int x, int y)
@@ -34,6 +62,17 @@ namespace Cellophain
             {
                 return new Boundary();
             }
+        }
+
+        public object DeepCopy()
+        {
+            Element copy = (Element) this.MemberwiseClone();
+            copy.vars = new Hashtable();
+            foreach (DictionaryEntry entry in vars)
+            {
+                copy.vars[entry.Key] = entry.Value;
+            }
+            return copy;
         }
     }
 }

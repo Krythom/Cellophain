@@ -11,16 +11,17 @@ namespace Cellophain
     {
         public Boundary()
         {
-            name = "boundary";
-            r = 0;
-            g = 0;
-            b = 0;
-            matterType = "solid";
-            density = double.MaxValue;
-            temp = 15;
+            vars["name"] = "boundary";
+            vars["r"] = 0;
+            vars["g"] = 0;
+            vars["b"] = 0;
+            vars["matterType"] = "solid";
+            vars["density"] = double.MaxValue;
+            vars["temp"] = 200;
+            vars["heatCapacity"] = 1;
         }
 
-        public override Request Iterate(Element[,] world, int xPos, int yPos)
+        public override Request Iterate(Element[,] world)
         {
             return null;
         }

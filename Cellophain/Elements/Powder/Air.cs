@@ -10,18 +10,22 @@ namespace Cellophain
     {
         public Air()
         {
-            name = "air";
-            r = 10;
-            g = 10;
-            b = 20;
-            temp = 15;
-            density = 0.001225;
-            matterType = "gas";
+            vars["name"] = "air";
+            vars["r"] = 10;
+            vars["g"] = 10;
+            vars["b"] = 20;
+            vars["temp"] = 0;
+            vars["density"] = 0.001225;
+            vars["matterType"] = "gas";
+            vars["heatCapacity"] = 1;
         }
 
-        public override Request Iterate(Element[,] world, int xPos, int yPos)
+        public override Request Iterate(Element[,] world)
         {
-            return null;
+            List<Instruction> instructions = new();
+            instructions.Add(new Instruction(this, "temp", this.GetTemp() + TempChange(world, this, GetLocation().X, GetLocation().Y)));
+            instructions.Add(new Instruction(this, "r", vars["temp"]));
+            return new Request(instructions);
         }
     }
 }

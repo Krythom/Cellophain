@@ -14,16 +14,18 @@ namespace Cellophain
         Random rand = new Random();
         public GeneSheep(int red, int green, int blue, int id, int n)
         {
-            name = "geneSheep";
-            r = red;
-            g = green;
-            b = blue;
+            vars["name"] = "geneSheep";
+            vars["r"] = red;
+            vars["g"] = green;
+            vars["b"] = blue;
             this.id = id;
             this.n = n;
         }
-        public override Request Iterate(Element[,] world, int xPos, int yPos)
+        public override Request Iterate(Element[,] world)
         {
             List<Instruction> instructions = new List<Instruction>();
+            int xPos = GetLocation().X;
+            int yPos = GetLocation().Y;
             int winningId = GetWinningId(world, xPos, yPos);
             Color winningColor = GetWinningColor(world, xPos, yPos, winningId);
             GeneSheep newSheep;
@@ -31,7 +33,7 @@ namespace Cellophain
 
             if (winningId == id)
             {
-                newSheep = new GeneSheep(r, g, b, id, n);
+                newSheep = this;
             }
             else
             {
@@ -91,7 +93,7 @@ namespace Cellophain
                 {
                     if (CheckCell(world, x, y).GetName() == "geneSheep")
                     {
-                        GeneSheep toCheck = (GeneSheep)CheckCell(world, x, y);
+                        GeneSheep toCheck = (GeneSheep) CheckCell(world, x, y);
 
                         if (!(y == yPos && x == xPos) && toCheck.id == winningId)
                         {
@@ -107,7 +109,7 @@ namespace Cellophain
             }
             else
             {
-                return new Color(r, g, b);
+                return this.GetColor();
             }
 
         }
