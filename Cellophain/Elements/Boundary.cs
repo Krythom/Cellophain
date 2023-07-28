@@ -17,8 +17,8 @@ namespace Cellophain
             vars["b"] = 0;
             vars["matterType"] = "solid";
             vars["density"] = double.MaxValue;
-            vars["temp"] = 200;
-            vars["heatCapacity"] = 1;
+            vars["temp"] = 0;
+            vars["heatCapacity"] = 0;
         }
 
         public override Request Iterate(Element[,] world)

@@ -30,7 +30,6 @@ namespace Cellophain
             Powder downRight = (Powder) CheckCell(world, xPos + 1, yPos + 1);
 
             instructions.Add(new Instruction(this, "temp", this.GetTemp() + TempChange(world, this, xPos, yPos)));
-            instructions.Add(new Instruction(this, "r", this.GetTemp()));
 
             if (down.GetMatter() is "gas" or "liquid")
             {

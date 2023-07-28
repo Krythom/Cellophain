@@ -14,7 +14,7 @@ namespace Cellophain
             vars["r"] = 10;
             vars["g"] = 10;
             vars["b"] = 20;
-            vars["temp"] = 0;
+            vars["temp"] = 15;
             vars["density"] = 0.001225;
             vars["matterType"] = "gas";
             vars["heatCapacity"] = 1;
@@ -24,7 +24,6 @@ namespace Cellophain
         {
             List<Instruction> instructions = new();
             instructions.Add(new Instruction(this, "temp", this.GetTemp() + TempChange(world, this, GetLocation().X, GetLocation().Y)));
-            instructions.Add(new Instruction(this, "r", vars["temp"]));
             return new Request(instructions);
         }
     }

@@ -31,7 +31,6 @@ namespace Cellophain
             Powder down = (Powder) CheckCell(world, xPos, yPos + 1);
 
             instructions.Add(new Instruction(this, "temp", this.GetTemp() + TempChange(world, this, xPos, yPos)));
-            instructions.Add(new Instruction(this, "r", vars["temp"]));
 
             //Movement
             if (down.GetMatter() is "gas" or "liquid" && down.GetName() != (string) vars["name"])
@@ -64,13 +63,6 @@ namespace Cellophain
                         instructions.Add(new Instruction(xPos + (2 * ((first + 1) % 2)) - 1, yPos, this));
                     }
                 }
-            }
-
-            //Boiling
-            if (GetTemp() >= 100)
-            {
-                instructions.Clear();
-                instructions.Add(new Instruction(xPos, yPos, new Air()));
             }
 
             return new Request(instructions);

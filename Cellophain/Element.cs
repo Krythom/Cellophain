@@ -23,7 +23,7 @@ namespace Cellophain
 
         public string GetName()
         {
-            return (string)vars["name"];
+            return System.Convert.ToString(vars["name"]);
         }
 
         public Color GetColor()
