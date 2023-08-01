@@ -23,7 +23,8 @@ namespace Cellophain
         public override Request Iterate(Element[,] world)
         {
             List<Instruction> instructions = new();
-            instructions.Add(new Instruction(this, "temp", this.GetTemp() + TempChange(world, this, GetLocation().X, GetLocation().Y)));
+            instructions = FluidUpdate(world, this, instructions);
+            instructions.Add(new Instruction(this, "temp", this.GetTemp() + TempChange(world, this)));
             return new Request(instructions);
         }
     }

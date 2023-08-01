@@ -72,8 +72,6 @@ namespace Cellophain
                 new Sand()
             };
 
-            RPS.CalculateWinners(3);
-
             world = new Element[gridSize, gridSize];
             CreateWorld();
 
@@ -87,7 +85,7 @@ namespace Cellophain
                 primaryElement = 0;
             }
 
-            paused = true;
+            paused = false;
             brushSize = 0;
 
             _graphics.PreferredBackBufferWidth = 1280;
