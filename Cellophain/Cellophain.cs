@@ -61,19 +61,18 @@ namespace Cellophain
             //1: randomized array traversal, minor performance cost, use if all requests are same priority
             //2: full priority system, large performance cost, use if some requests are higher priority than others
 
-            priorityType = 1;
+            priorityType = 0;
             iterator = new Iterator(gridSize, priorityType);
 
             //Add whatever element you want to be the background as the first in the list
             activeElements = new List<Element>
             {
-                new Air(),
-                new Water(),
-                new Sand(),
-                new Dirt(),
-                new GrassSeed()
+                new RPS(rand.Next(256), rand.Next(256), rand.Next(256), 0, 3),
+                new RPS(rand.Next(256), rand.Next(256), rand.Next(256), 1, 3),
+                new RPS(rand.Next(256), rand.Next(256), rand.Next(256), 2, 3)
             };
 
+            RPS.CalculateWinners(3);
             world = new Element[gridSize, gridSize];
             CreateWorld();
 

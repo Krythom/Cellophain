@@ -33,7 +33,7 @@ namespace Cellophain
 
             if (winner != null)
             {
-                instructions.Add(new Instruction(xPos, yPos, winner));
+                instructions.Add(new Instruction(xPos, yPos, (Element)winner.DeepCopy()));
             }
             else
             {
@@ -64,7 +64,7 @@ namespace Cellophain
 
             for (int i = 0; i < neighbors.Length; i++)
             {
-                if (neighbors[i] > 1 && i != id)
+                if (neighbors[i] > 2 && i != id)
                 {
                     if (winners[elements[i].id, id] == elements[i].id)
                     {

@@ -27,7 +27,7 @@ namespace Cellophain
 
             if (winner != null)
             {
-                instructions.Add(new Instruction(xPos, yPos, winner));
+                instructions.Add(new Instruction(xPos, yPos, (Element)winner.DeepCopy()));
             }
             else
             {
