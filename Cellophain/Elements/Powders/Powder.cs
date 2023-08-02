@@ -10,26 +10,6 @@ namespace Cellophain
     abstract class Powder : Element
     {
         Random rand = new Random();
-        public string GetMatter()
-        {
-            return System.Convert.ToString(vars["matterType"]);
-        }
-
-        public double GetDensity()
-        {
-            return System.Convert.ToDouble(vars["density"]);
-        }
-
-        public double GetTemp() 
-        {
-            return System.Convert.ToDouble(vars["temp"]);
-        }
-
-        public double GetCapacity()
-        {
-            return System.Convert.ToDouble(vars["heatCapacity"]);
-        }
-
         public double TempChange(Element[,] world, Powder self)
         {
             int xPos = self.GetLocation().X;
@@ -85,7 +65,7 @@ namespace Cellophain
                     instructions.Add(new Instruction(xPos, yPos + 1, self));
                 }
             }
-            else
+            else if (rand.NextDouble() < self.GetSpeed())
             {
                 //Randomize order of directional checks to avoid left bias
                 Powder[] sides = { downLeft, downRight };
@@ -128,7 +108,7 @@ namespace Cellophain
                     instructions.Add(new Instruction(xPos, yPos + 1, self));
                 }
             }
-            else
+            else if (rand.NextDouble() < self.GetSpeed())
             {
                 //Randomize order of directional checks to avoid left bias
                 Powder[] sides = { left, right };
@@ -153,6 +133,31 @@ namespace Cellophain
             }
 
             return instructions;
+        }
+
+        public string GetMatter()
+        {
+            return System.Convert.ToString(vars["matterType"]);
+        }
+
+        public double GetDensity()
+        {
+            return System.Convert.ToDouble(vars["density"]);
+        }
+
+        public double GetTemp()
+        {
+            return System.Convert.ToDouble(vars["temp"]);
+        }
+
+        public double GetCapacity()
+        {
+            return System.Convert.ToDouble(vars["heatCapacity"]);
+        }
+
+        public double GetSpeed()
+        {
+            return System.Convert.ToDouble(vars["speed"]);
         }
     }
 }

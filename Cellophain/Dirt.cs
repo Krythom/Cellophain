@@ -6,24 +6,25 @@ using System.Threading.Tasks;
 
 namespace Cellophain
 {
-    class Air : Powder
+    internal class Dirt : Powder
     {
-        public Air()
+        public Dirt()
         {
-            vars["name"] = "air";
-            vars["r"] = 10;
-            vars["g"] = 10;
-            vars["b"] = 20;
+            vars["name"] = "dirt";
+            vars["r"] = 75;
+            vars["g"] = 50;
+            vars["b"] = 25;
+            vars["matterType"] = "powder";
             vars["temp"] = 15;
-            vars["density"] = 0.001225;
-            vars["matterType"] = "gas";
-            vars["heatCapacity"] = 1;
+            vars["density"] = 1.76;
+            vars["heatCapacity"] = 1.3;
+            vars["speed"] = 0.3;
         }
 
         public override Request Iterate(Element[,] world)
         {
             List<Instruction> instructions = new();
-            instructions = FluidUpdate(world, this, instructions);
+            instructions = PowderUpdate(world, this, instructions);
             instructions.Add(new Instruction(this, "temp", this.GetTemp() + TempChange(world, this)));
             return new Request(instructions);
         }

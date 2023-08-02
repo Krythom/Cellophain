@@ -16,6 +16,7 @@ namespace Cellophain
             vars["temp"] = 15;
             vars["density"] = 1.52;
             vars["heatCapacity"] = 0.290;
+            vars["speed"] = 1;
         }
 
         public override Request Iterate(Element[,] world)

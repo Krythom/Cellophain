@@ -69,7 +69,9 @@ namespace Cellophain
             {
                 new Air(),
                 new Water(),
-                new Sand()
+                new Sand(),
+                new Dirt(),
+                new GrassSeed()
             };
 
             world = new Element[gridSize, gridSize];
@@ -85,7 +87,7 @@ namespace Cellophain
                 primaryElement = 0;
             }
 
-            paused = false;
+            paused = true;
             brushSize = 0;
 
             _graphics.PreferredBackBufferWidth = 1280;
@@ -142,7 +144,7 @@ namespace Cellophain
             {
                 for (int y = 0; y < gridSize; y++)
                 {
-                    Element placed = (Element) activeElements[0].DeepCopy();
+                    Element placed = (Element)activeElements[rand.Next(activeElements.Count)].DeepCopy();
                     placed.SetLocation(new Point(x, y));
                     world[x, y] = placed;
                 }
