@@ -21,6 +21,11 @@ namespace Cellophain
 
         public abstract Request Iterate(Element[,] world);
 
+        //Override if an Element needs to do something on creation (such as randomize a property)
+        public virtual void Initialize()
+        {
+        }
+
         public string GetName()
         {
             return System.Convert.ToString(vars["name"]);

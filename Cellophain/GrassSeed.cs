@@ -13,9 +13,9 @@ namespace Cellophain
         public GrassSeed()
         {
             vars["name"] = "grassSeed";
-            vars["r"] = 110;
-            vars["g"] = rand.Next(150);
-            vars["b"] = 75;
+            vars["r"] = 150;
+            vars["g"] = 100;
+            vars["b"] = 100;
             vars["matterType"] = "powder";
             vars["temp"] = 15;
             vars["density"] = 1.2;
@@ -30,13 +30,19 @@ namespace Cellophain
             instructions.Add(new Instruction(this, "temp", this.GetTemp() + TempChange(world, this)));
             int xPos = GetLocation().X;
             int yPos = GetLocation().Y;
+            Powder down = (Powder)CheckCell(world, xPos, yPos + 1);
 
-            if (CheckCell(world, xPos, yPos + 1).GetName() == "dirt")
+            if (!(down.GetMatter() is "gas" or "liquid"))
+            {
+                instructions.Add(new Instruction(xPos, yPos, new Air()));
+            }
+            if (down.GetName() == "dirt")
             {
                 Grass toPlace = new();
                 instructions.Add(new Instruction(xPos, yPos, toPlace));
-                instructions.Add(new Instruction(toPlace, "growth", GetColor().G / 30));
+                instructions.Add(new Instruction(toPlace, "growth", rand.Next(4)));
             }
+
             return new Request(instructions);
         }
     }

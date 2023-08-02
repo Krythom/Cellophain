@@ -8,6 +8,8 @@ namespace Cellophain
 {
     internal class Grass : Powder
     {
+        Random rand = new();
+
         public Grass()
         {
             vars["name"] = "grass";
@@ -42,7 +44,14 @@ namespace Cellophain
             if (!(down.GetName() is "dirt" or "grass"))
             {
                 instructions.Clear();
-                instructions.Add(new Instruction(xPos, yPos, new Air()));
+                if (rand.NextDouble() < 0.2)
+                {
+                    instructions.Add(new Instruction(xPos, yPos, new GrassSeed()));
+                }
+                else
+                {
+                    instructions.Add(new Instruction(xPos, yPos, new Air()));
+                }
             }
 
             return new Request(instructions);

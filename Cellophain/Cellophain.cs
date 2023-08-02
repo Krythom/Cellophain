@@ -61,18 +61,19 @@ namespace Cellophain
             //1: randomized array traversal, minor performance cost, use if all requests are same priority
             //2: full priority system, large performance cost, use if some requests are higher priority than others
 
-            priorityType = 0;
+            priorityType = 1;
             iterator = new Iterator(gridSize, priorityType);
 
             //Add whatever element you want to be the background as the first in the list
             activeElements = new List<Element>
             {
-                new RPS(rand.Next(256), rand.Next(256), rand.Next(256), 0, 3),
-                new RPS(rand.Next(256), rand.Next(256), rand.Next(256), 1, 3),
-                new RPS(rand.Next(256), rand.Next(256), rand.Next(256), 2, 3)
+                new Air(),
+                new Dirt(),
+                new Sand(),
+                new Water(),
+                new GrassSeed()
             };
 
-            RPS.CalculateWinners(3);
             world = new Element[gridSize, gridSize];
             CreateWorld();
 
@@ -143,7 +144,8 @@ namespace Cellophain
             {
                 for (int y = 0; y < gridSize; y++)
                 {
-                    Element placed = (Element)activeElements[rand.Next(activeElements.Count)].DeepCopy();
+                    Element placed = (Element)activeElements[0].DeepCopy();
+                    placed.Initialize();
                     placed.SetLocation(new Point(x, y));
                     world[x, y] = placed;
                 }
@@ -207,6 +209,7 @@ namespace Cellophain
                     if (mouseX + x >= 0 && mouseX + x < world.GetLength(0) && mouseY + y >= 0 && mouseY + y < world.GetLength(0))
                     {
                         Element placed = (Element) activeElements[element].DeepCopy();
+                        placed.Initialize();
                         placed.SetLocation(new Point (mouseX + x, mouseY + y));
                         world[mouseX + x, mouseY + y] = placed;
                     }
