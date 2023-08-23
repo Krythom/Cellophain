@@ -21,6 +21,8 @@ namespace Cellophain
             vars["heatCapacity"] = 0;
         }
 
+        public static readonly Boundary Self = new();
+
         public override Request Iterate(Element[,] world)
         {
             return null;

@@ -65,7 +65,7 @@ namespace Cellophain
             }
             else
             {
-                return new Boundary();
+                return Boundary.Self;
             }
         }
 

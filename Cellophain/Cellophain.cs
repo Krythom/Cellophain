@@ -8,6 +8,7 @@ using System.IO;
 using Bitmap = System.Drawing.Bitmap;
 using SColor = System.Drawing.Color;
 using System.Collections;
+using System.Diagnostics;
 
 namespace Cellophain
 {
@@ -35,6 +36,7 @@ namespace Cellophain
         private bool paused;
         private int brushSize;
         private bool precisionBrush;
+        private int iterations = 0;
         private int imageSuffix = 0;
 
 
@@ -53,7 +55,7 @@ namespace Cellophain
         protected override void Initialize()
         {
             //Keep gridsize to a factor of 600, the world itself doesn't scale
-            gridSize = 50;
+            gridSize = 100;
             cellSize = 600 / gridSize;
 
             //priorityType determines how conflicts in requests are handled
@@ -65,14 +67,13 @@ namespace Cellophain
             iterator = new Iterator(gridSize, priorityType);
 
             //Add whatever element you want to be the background as the first in the list
-            activeElements = new List<Element>
+            activeElements = new List<Element>();
+
+            int num = 10;
+            for (int i = 0; i < num; i++)
             {
-                new Air(),
-                new Dirt(),
-                new Sand(),
-                new Water(),
-                new GrassSeed()
-            };
+                activeElements.Add(new GeneSheep(rand.Next(256), rand.Next(256), rand.Next(256), i , num));
+            }
 
             world = new Element[gridSize, gridSize];
             CreateWorld();
@@ -132,9 +133,9 @@ namespace Cellophain
             else
             {
                 world = iterator.Iterate(world);
+                iterations++;
             }
-
-
+            Debug.WriteLine(iterations);
             base.Update(gameTime);
         }
 
@@ -144,7 +145,7 @@ namespace Cellophain
             {
                 for (int y = 0; y < gridSize; y++)
                 {
-                    Element placed = (Element)activeElements[0].DeepCopy();
+                    Element placed = (Element)activeElements[rand.Next(activeElements.Count)].DeepCopy();
                     placed.Initialize();
                     placed.SetLocation(new Point(x, y));
                     world[x, y] = placed;
@@ -176,7 +177,7 @@ namespace Cellophain
                 for (int y = 0; y < gridSize; y++)
                 {
                     Rectangle squarePos = new Rectangle(new Point((x * cellSize) + 340, (y * cellSize) + 60), new Point(cellSize, cellSize));
-                    _spriteBatch.Draw(square, squarePos, world[x,y].GetColor());
+                    _spriteBatch.Draw(square, squarePos, world[x, y].GetColor());
                 }
             }
 

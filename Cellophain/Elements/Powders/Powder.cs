@@ -135,6 +135,38 @@ namespace Cellophain
             return instructions;
         }
 
+        public List<Instruction> SolidUpdate(Element[,] world, Powder self, List<Instruction> instructions)
+        {
+            int xPos = self.GetLocation().X;
+            int yPos = self.GetLocation().Y;
+            Powder down = (Powder)CheckCell(world, xPos, yPos + 1);
+            Powder left = (Powder)CheckCell(world, xPos - 1, yPos);
+            Powder up = (Powder)CheckCell(world, xPos, yPos - 1);
+            Powder right = (Powder)CheckCell(world, xPos + 1, yPos + 1);
+            List<Powder> neighbors = new List<Powder>
+            {
+                up,
+                right,
+                down,
+                left
+            };
+
+            foreach (Powder n in neighbors)
+            {
+            }
+
+            if (!System.Convert.ToBoolean(vars["set"]))
+            {
+                if (rand.NextDouble() > down.GetDensity() / self.GetDensity())
+                {
+                    instructions.Add(new Instruction(xPos, yPos, down));
+                    instructions.Add(new Instruction(xPos, yPos + 1, self));
+                }
+            }
+
+            return instructions;
+        }
+
         public string GetMatter()
         {
             return System.Convert.ToString(vars["matterType"]);

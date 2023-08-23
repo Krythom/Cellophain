@@ -7,9 +7,9 @@ namespace Cellophain
 {
     class GeneSheep : Element
     {
-        int id;
         int n;
         int mutationStrength;
+        List<GeneSheep> neighbors = new();
 
         Random rand = new Random();
         public GeneSheep(int red, int green, int blue, int id, int n)
@@ -18,66 +18,75 @@ namespace Cellophain
             vars["r"] = red;
             vars["g"] = green;
             vars["b"] = blue;
-            this.id = id;
+            vars["id"] = id;
+            vars["sleep"] = false;
             this.n = n;
         }
         public override Request Iterate(Element[,] world)
         {
-            List<Instruction> instructions = new List<Instruction>();
-            int xPos = GetLocation().X;
-            int yPos = GetLocation().Y;
-            int winningId = GetWinningId(world, xPos, yPos);
-            Color winningColor = GetWinningColor(world, xPos, yPos, winningId);
-            GeneSheep newSheep;
-            mutationStrength = 10;
-
-            if (winningId == id)
+            if (neighbors.Count == 0)
             {
-                newSheep = this;
+                this.neighbors = GetNeighbors(world, GetLocation().X, GetLocation().Y);
+            }
+
+            if (!IsSleeping())
+            {
+                List<Instruction> instructions = new List<Instruction>();
+                int xPos = GetLocation().X;
+                int yPos = GetLocation().Y;
+                int winningId = GetWinningId(world, xPos, yPos);
+                Color winningColor = GetWinningColor(world, xPos, yPos, winningId);
+                mutationStrength = 10;
+
+                if (winningId != this.GetID())
+                {
+                    instructions.Add(new Instruction(this, "r", winningColor.R + rand.Next(-mutationStrength, mutationStrength + 1)));
+                    instructions.Add(new Instruction(this, "g", winningColor.G + rand.Next(-mutationStrength, mutationStrength + 1)));
+                    instructions.Add(new Instruction(this, "b", winningColor.B + rand.Next(-mutationStrength, mutationStrength + 1)));
+                    instructions.Add(new Instruction(this, "id", winningId));
+                    foreach (GeneSheep g in neighbors)
+                    {
+                        instructions.Add(new Instruction(g, "sleep", false));
+                    }
+                }
+
+                return new Request(instructions);
             }
             else
             {
-                newSheep = new GeneSheep(winningColor.R + rand.Next(-mutationStrength, mutationStrength+1), winningColor.G + rand.Next(-mutationStrength, mutationStrength+1), winningColor.B + rand.Next(-mutationStrength, mutationStrength+1), winningId, n);
+                return null;
             }
-
-            instructions.Add(new Instruction(xPos, yPos, newSheep));
-            return new Request(instructions);
         }
 
         private int GetWinningId(Element[,] world, int xPos, int yPos)
         {
-            int[] neighbors = new int[n];
+            int[] neighborIDs = new int[n];
 
-            for (int x = xPos - 1; x <= xPos + 1; x++)
+            foreach (GeneSheep g in neighbors)
             {
-                for (int y = yPos - 1; y <= yPos + 1; y++)
-                {
-                   if (CheckCell(world, x, y).GetName() == "geneSheep")
-                   {
-                        GeneSheep toCheck = (GeneSheep) CheckCell(world, x, y);
-                        if (!(y == yPos && x == xPos))
-                        {
-                            neighbors[toCheck.id]++;
-                        }
-                   }
-                }
+                neighborIDs[g.GetID()]++;
             }
 
             int winningId = -1;
             int highestCount = -1;
 
-            for (int i = 0; i < neighbors.Length; i++)
+            for (int i = 0; i < neighborIDs.Length; i++)
             {
-                if (neighbors[i] > highestCount)
+                if (neighborIDs[i] > highestCount)
                 {
                     winningId = i;
-                    highestCount = neighbors[i];
+                    highestCount = neighborIDs[i];
                 }
-                if (neighbors[i] == highestCount && rand.NextDouble() < 0.5)
+                else if (neighborIDs[i] == highestCount && rand.NextDouble() < 0.5)
                 {
                     winningId = i;
-                    highestCount = neighbors[i];
+                    highestCount = neighborIDs[i];
                 }
+            }
+
+            if (neighborIDs[GetID()] == neighbors.Count)
+            {
+                vars["sleep"] = true; 
             }
 
             return winningId;
@@ -87,37 +96,47 @@ namespace Cellophain
         {
             List<GeneSheep> winners = new List<GeneSheep>();
 
+            foreach (GeneSheep g in neighbors)
+            {
+                if (g.GetID() == winningId)
+                {
+                    winners.Add(g);
+                }
+            }
+
+            return winners[winners.Count/2].GetColor();
+        }
+
+        private List<GeneSheep> GetNeighbors(Element[,] world, int xPos, int yPos)
+        {
+            List<GeneSheep> neighbors = new();
+
             for (int x = xPos - 1; x <= xPos + 1; x++)
             {
                 for (int y = yPos - 1; y <= yPos + 1; y++)
                 {
-                    if (CheckCell(world, x, y).GetName() == "geneSheep")
+                    var cell = CheckCell(world, x, y);
+                    if (cell is GeneSheep toAdd)
                     {
-                        GeneSheep toCheck = (GeneSheep) CheckCell(world, x, y);
-
-                        if (!(y == yPos && x == xPos) && toCheck.id == winningId)
+                        if (!(y == yPos && x == xPos))
                         {
-                            winners.Add(toCheck);
+                            neighbors.Add(toAdd);
                         }
                     }
                 }
             }
 
-            if (winners.Count > 0)
-            {
-                return winners[0].GetColor();
-            }
-            else
-            {
-                return this.GetColor();
-            }
-
+            return neighbors;
         }
 
-        private int Mod(int x, int m)
+        private int GetID()
         {
-            int r = x % m;
-            return r < 0 ? r + m : r;
+            return System.Convert.ToInt32(vars["id"]);
+        }
+
+        private bool IsSleeping()
+        {
+            return System.Convert.ToBoolean(vars["sleep"]);
         }
     }
 }
