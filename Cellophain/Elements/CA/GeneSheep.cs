@@ -21,6 +21,7 @@ namespace Cellophain
             vars["id"] = id;
             vars["sleep"] = false;
             this.n = n;
+            this.mutationStrength = 10;
         }
         public override Request Iterate(Element[,] world)
         {
@@ -36,7 +37,6 @@ namespace Cellophain
                 int yPos = GetLocation().Y;
                 int winningId = GetWinningId(world, xPos, yPos);
                 Color winningColor = GetWinningColor(world, xPos, yPos, winningId);
-                mutationStrength = 10;
 
                 if (winningId != this.GetID())
                 {
@@ -104,24 +104,21 @@ namespace Cellophain
                 }
             }
 
-            return winners[winners.Count/2].GetColor();
+            return winners[winners.Count / 2].GetColor();
         }
 
         private List<GeneSheep> GetNeighbors(Element[,] world, int xPos, int yPos)
         {
             List<GeneSheep> neighbors = new();
 
-            for (int x = xPos - 1; x <= xPos + 1; x++)
+            for (int x = -1; x <= 1; x++)
             {
-                for (int y = yPos - 1; y <= yPos + 1; y++)
+                for (int y = -1; y <=1; y++)
                 {
-                    var cell = CheckCell(world, x, y);
-                    if (cell is GeneSheep toAdd)
+                    var cell = CheckCell(world, x + xPos, y + yPos);
+                    if (cell is GeneSheep g && !(x == 0 && y == 0))
                     {
-                        if (!(y == yPos && x == xPos))
-                        {
-                            neighbors.Add(toAdd);
-                        }
+                        neighbors.Add(g);
                     }
                 }
             }

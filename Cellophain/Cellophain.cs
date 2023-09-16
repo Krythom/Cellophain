@@ -36,7 +36,6 @@ namespace Cellophain
         private bool paused;
         private int brushSize;
         private bool precisionBrush;
-        private int iterations = 0;
         private int imageSuffix = 0;
 
 
@@ -55,7 +54,7 @@ namespace Cellophain
         protected override void Initialize()
         {
             //Keep gridsize to a factor of 600, the world itself doesn't scale
-            gridSize = 100;
+            gridSize = 200;
             cellSize = 600 / gridSize;
 
             //priorityType determines how conflicts in requests are handled
@@ -63,16 +62,15 @@ namespace Cellophain
             //1: randomized array traversal, minor performance cost, use if all requests are same priority
             //2: full priority system, large performance cost, use if some requests are higher priority than others
 
-            priorityType = 1;
+            priorityType = 0;
             iterator = new Iterator(gridSize, priorityType);
 
             //Add whatever element you want to be the background as the first in the list
             activeElements = new List<Element>();
 
-            int num = 10;
-            for (int i = 0; i < num; i++)
+            for (int i = 0; i < 50; i++)
             {
-                activeElements.Add(new GeneSheep(rand.Next(256), rand.Next(256), rand.Next(256), i , num));
+                activeElements.Add(new Bobbit(rand.Next(256), rand.Next(256), rand.Next(256), i, rand.NextDouble()));
             }
 
             world = new Element[gridSize, gridSize];
@@ -88,11 +86,12 @@ namespace Cellophain
                 primaryElement = 0;
             }
 
-            paused = true;
+            paused = false;
             brushSize = 0;
 
             _graphics.PreferredBackBufferWidth = 1280;
             _graphics.PreferredBackBufferHeight = 720;
+            _graphics.SynchronizeWithVerticalRetrace = false;
             _graphics.ApplyChanges();
 
             base.Initialize();
@@ -133,9 +132,7 @@ namespace Cellophain
             else
             {
                 world = iterator.Iterate(world);
-                iterations++;
             }
-            Debug.WriteLine(iterations);
             base.Update(gameTime);
         }
 

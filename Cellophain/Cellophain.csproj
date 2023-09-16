@@ -25,6 +25,7 @@
     <None Remove="Icon.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Elements\CA\Bobbit.cs" />
     <Compile Include="Elements\CA\GeneSheep.cs" />
     <Compile Include="Elements\CA\GoL.cs" />
     <Compile Include="Elements\CA\HueGene.cs" />
