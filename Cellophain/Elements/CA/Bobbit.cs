@@ -31,12 +31,16 @@ namespace Cellophain
             {
                 instructions.Add(new Instruction(xPos, yPos, new Bobbit(win.R, win.G, win.B, winner.GetId(), winner.GetStrength() + rand.NextDouble() - 0.75)));
             }
+            else
+            {
+                instructions.Add(new Instruction(this, "strength", GetStrength() + (rand.NextDouble() - 1)/10));
+            }
             return new Request(instructions);
         }
 
         public Bobbit GetStrongest(Element[,] world, int xPos, int yPos)
         {
-            double strongest = GetStrength();
+            double strongest = 0;
             Point strongestLoc = new Point(xPos,yPos);
 
             for (int x = -1; x <= 1; x++)
@@ -48,7 +52,7 @@ namespace Cellophain
                         var cell = CheckCell(world, xPos + x, yPos + y);
                         if (cell is Bobbit toCheck)
                         {
-                            if (toCheck.GetStrength() > strongest)
+                            if (toCheck.GetStrength() >= strongest)
                             {
                                 strongest = toCheck.GetStrength();
                                 strongestLoc = toCheck.GetLocation();

@@ -68,7 +68,7 @@ namespace Cellophain
             //Add whatever element you want to be the background as the first in the list
             activeElements = new List<Element>();
 
-            for (int i = 0; i < 50; i++)
+            for (int i = 0; i < 10; i++)
             {
                 activeElements.Add(new Bobbit(rand.Next(256), rand.Next(256), rand.Next(256), i, rand.NextDouble()));
             }
@@ -86,7 +86,7 @@ namespace Cellophain
                 primaryElement = 0;
             }
 
-            paused = false;
+            paused = true;
             brushSize = 0;
 
             _graphics.PreferredBackBufferWidth = 1280;
